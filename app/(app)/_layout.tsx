@@ -73,7 +73,7 @@ export default function AppLayout(): JSX.Element {
         }}
       />
       {/* Hidden screens (not shown in tab bar) */}
-      <Tabs.Screen name="boxes/[id]" options={{ href: null }} />
+      <Tabs.Screen name="boxes/[id]/index" options={{ href: null }} />
       <Tabs.Screen name="boxes/create" options={{ href: null }} />
       <Tabs.Screen name="boxes/[id]/qr" options={{ href: null }} />
     </Tabs>
