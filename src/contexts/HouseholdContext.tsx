@@ -124,18 +124,21 @@ export function HouseholdProvider({ children }: { children: React.ReactNode }) {
 
   async function inviteMember(email: string, role: UserRole) {
     if (!currentHousehold) throw new Error('No household selected');
+
+    // Look up whether this email already has a StashTag account
     const { data: profile } = await supabase
       .from('profiles')
       .select('id')
-      .eq('email', email)
+      .eq('email', email.toLowerCase().trim())
       .maybeSingle();
 
     const { error } = await supabase.from('household_members').insert({
       household_id: currentHousehold.id,
-      user_id: profile?.id ?? user?.id,
+      // null when the person hasn't signed up yet; filled in when they join
+      user_id: profile?.id ?? null,
       role,
       status: profile ? 'active' : 'pending',
-      invited_email: email,
+      invited_email: email.toLowerCase().trim(),
       invited_by: user?.id,
     });
     if (error) throw error;

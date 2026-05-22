@@ -9,6 +9,7 @@ import { AuthProvider } from '../src/contexts/AuthContext';
 import { HouseholdProvider } from '../src/contexts/HouseholdContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,6 +49,7 @@ export default function RootLayout(): JSX.Element | null {
           </HouseholdProvider>
         </AuthProvider>
       </PaperProvider>
+      <Toast />
     </GestureHandlerRootView>
   );
 }

@@ -50,51 +50,49 @@ export default function QRManagementScreen(): JSX.Element {
     fetchBox();
   }, [fetchBox]);
 
+  const getQRDataUrl = (): Promise<string> =>
+    new Promise((resolve, reject) => {
+      if (!svgRef.current) {
+        reject(new Error('QR ref not ready'));
+        return;
+      }
+      svgRef.current.toDataURL((data: string) => resolve(data));
+    });
+
+  const buildLabelHtml = (qrBase64: string, boxName: string): string => `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        @page { size: 2in 2in; margin: 0; }
+        body {
+          margin: 0; padding: 0;
+          width: 2in; height: 2in;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          font-family: -apple-system, sans-serif;
+          background: white;
+        }
+        img { width: 1.4in; height: 1.4in; display: block; margin-bottom: 4px; }
+        .label { font-size: 9px; font-weight: bold; color: #0F1F3D; text-align: center; max-width: 1.8in; }
+        .brand { font-size: 7px; color: #F5A623; font-weight: 800; letter-spacing: 1px; margin-top: 2px; }
+      </style>
+    </head>
+    <body>
+      <img src="data:image/png;base64,${qrBase64}" />
+      <div class="label">${boxName}</div>
+      <div class="brand">STASHTAG</div>
+    </body>
+    </html>
+  `;
+
   const handlePrint = async () => {
     if (!box) return;
     setIsPrinting(true);
     try {
-      const qrValue = box.qr_code ?? box.id;
-
-      // Build SVG data URI for QR
-      const html = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            @page { size: 2in 2in; margin: 0; }
-            body {
-              margin: 0; padding: 0;
-              width: 2in; height: 2in;
-              display: flex; flex-direction: column;
-              align-items: center; justify-content: center;
-              font-family: -apple-system, sans-serif;
-              background: white;
-            }
-            .qr-placeholder {
-              width: 1.4in;
-              height: 1.4in;
-              border: 2px solid #0F1F3D;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 8px;
-              color: #0F1F3D;
-              margin-bottom: 4px;
-            }
-            .label { font-size: 9px; font-weight: bold; color: #0F1F3D; text-align: center; max-width: 1.8in; }
-            .brand { font-size: 7px; color: #F5A623; font-weight: 800; letter-spacing: 1px; margin-top: 2px; }
-          </style>
-        </head>
-        <body>
-          <div class="qr-placeholder">QR: ${qrValue.slice(0, 8)}...</div>
-          <div class="label">${box.name}</div>
-          <div class="brand">STASHTAG</div>
-        </body>
-        </html>
-      `;
-
+      const qrBase64 = await getQRDataUrl();
+      const html = buildLabelHtml(qrBase64, box.name);
       const { uri } = await Print.printToFileAsync({ html, width: 144, height: 144 });
       await Print.printAsync({ uri });
     } catch (err) {
@@ -108,7 +106,7 @@ export default function QRManagementScreen(): JSX.Element {
     if (!box) return;
     setIsSharing(true);
     try {
-      const qrValue = box.qr_code ?? box.id;
+      const qrBase64 = await getQRDataUrl();
       const html = `
         <!DOCTYPE html>
         <html>
@@ -116,22 +114,22 @@ export default function QRManagementScreen(): JSX.Element {
           <meta charset="utf-8">
           <style>
             body {
-              margin: 0; padding: 20px;
+              margin: 0; padding: 32px 20px;
               font-family: -apple-system, sans-serif;
               text-align: center; background: white;
             }
-            h2 { color: #0F1F3D; margin-bottom: 4px; }
-            p { color: #6B7280; font-size: 12px; }
-            .code { font-family: monospace; font-size: 10px; color: #9CA3AF; margin-top: 8px; }
-            .brand { color: #F5A623; font-weight: 800; font-size: 18px; letter-spacing: 2px; }
+            h2 { color: #0F1F3D; margin: 12px 0 4px; font-size: 20px; }
+            p { color: #6B7280; font-size: 13px; margin: 4px 0; }
+            img { width: 200px; height: 200px; display: block; margin: 0 auto; }
+            .brand { color: #F5A623; font-weight: 800; font-size: 22px; letter-spacing: 2px; }
           </style>
         </head>
         <body>
           <div class="brand">STASHTAG</div>
+          <img src="data:image/png;base64,${qrBase64}" />
           <h2>${box.name}</h2>
           ${box.location ? `<p>📍 ${box.location}</p>` : ''}
           <p>Scan this QR code with StashTag to view box contents.</p>
-          <p class="code">${qrValue}</p>
         </body>
         </html>
       `;

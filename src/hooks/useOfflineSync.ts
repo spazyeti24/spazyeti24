@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNetworkStatus } from './useNetworkStatus';
-import { getSyncQueue, removeSyncItem, saveSyncQueue } from '../lib/storage';
+import { getSyncQueue, saveSyncQueue } from '../lib/storage';
 import { supabase } from '../lib/supabase';
 import { SyncQueueItem, Box, Tag } from '../types';
 

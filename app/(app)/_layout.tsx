@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useOfflineSync } from '../../src/hooks/useOfflineSync';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
@@ -16,6 +17,8 @@ function TabIcon({ name, color, size }: TabIconProps): JSX.Element {
 }
 
 export default function AppLayout(): JSX.Element {
+  useOfflineSync();
+
   return (
     <Tabs
       screenOptions={{

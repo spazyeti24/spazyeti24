@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS public.households (
 CREATE TABLE IF NOT EXISTS public.household_members (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   household_id  UUID NOT NULL REFERENCES public.households(id) ON DELETE CASCADE,
-  user_id       UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  -- NULL until the invited person signs up and accepts
+  user_id       UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   role          TEXT NOT NULL DEFAULT 'viewer' CHECK (role IN ('head', 'editor', 'viewer')),
   status        TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('active', 'pending', 'removed')),
   invited_email TEXT,
@@ -40,7 +41,8 @@ CREATE TABLE IF NOT EXISTS public.household_members (
   joined_at     TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE (household_id, user_id)
+  -- only enforce uniqueness when user_id is not null
+  UNIQUE NULLS NOT DISTINCT (household_id, user_id)
 );
 
 -- Boxes: the core entity
