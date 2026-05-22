@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "StashTag",
+    "slug": "stashtag",
+    "scheme": "stashtag",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F1F3D"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.stashtag.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#0F1F3D"
+      },
+      "package": "com.stashtag.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow StashTag to access your camera to scan QR codes and take box photos."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow StashTag to access your photos to add images to your boxes."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
