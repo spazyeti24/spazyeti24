@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import QRCode from 'react-native-qrcode-svg';
-import 'react-native-get-random-values';
 import { TagChip } from '../../../src/components/ui/TagChip';
 import { useAuth } from '../../../src/contexts/AuthContext';
 import { useHousehold } from '../../../src/contexts/HouseholdContext';
@@ -58,7 +57,8 @@ const GENERAL_TAGS = [
 ];
 
 export default function CreateBoxScreen(): JSX.Element {
-  const { id: editId } = useLocalSearchParams<{ id?: string }>();
+  const params = useLocalSearchParams<{ id?: string; boxId?: string }>();
+  const editId = params.id ?? params.boxId;
   const isEditing = !!editId;
 
   const { user } = useAuth();

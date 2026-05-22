@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Linking,
+  Platform,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -427,6 +428,3 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
 });
-
-// Needed for Platform.OS reference in styles
-import { Platform } from 'react-native';
